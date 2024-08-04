@@ -25,7 +25,6 @@ class CreateProduct extends Migration
 
             // 商品标识
             $table->string('product_no', 32)->index()->unique()->comment('商品唯一标识');
-            $table->string('plat_no', 32)->index()->comment('商品第三方唯一标识');
 
             // 商品名称
             $table->string('name', 150)->comment('商品名称');
@@ -61,7 +60,6 @@ class CreateProduct extends Migration
             $table->dateTime('deleted_at')->nullable();
 
             $table->index(['product_no'], 'idx_no');
-            $table->index(['plat_no'], 'idx_plat_no');
             $table->index(['category_no'], 'idx_cno');
 
             $table->comment('商品表');

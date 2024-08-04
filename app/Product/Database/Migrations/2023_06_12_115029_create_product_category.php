@@ -34,8 +34,6 @@ class CreateProductCategory extends Migration
             $table->datetime('deleted_at')->nullable();
 
             $table->index('category_no', 'idx_cno');
-            $table->index('plat_no', 'idx_plat_no');
-            $table->index(['plat_no', 'category_no'], 'idx_plat_cno');
             $table->comment('商品分类');
         });
     }

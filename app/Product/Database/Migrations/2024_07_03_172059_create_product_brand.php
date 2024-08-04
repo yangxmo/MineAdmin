@@ -32,7 +32,6 @@ class CreateProductBrand extends Migration
             $table->datetimes();
             $table->dateTime('deleted_at')->nullable();
 
-            $table->index('plat_no', 'idx_plat_no');
             $table->index('brand_no', 'idx_brand_no');
 
             $table->comment('商品品牌表');
