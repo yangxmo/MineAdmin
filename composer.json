@@ -16,6 +16,7 @@
   "license": "Apache-2.0",
   "require": {
     "mineadmin/app-store": "~2.0",
+    "overtrue/easy-sms": "~3.0.0",
     "xmo/jwt-auth": "~2.0",
     "xmo/mine-core": "~2.0",
     "xmo/mine-generator": "~2.0",
