@@ -12,23 +12,23 @@ declare(strict_types=1);
 
 namespace App\Product\Mapper;
 
-use App\Product\Model\ProductCategory;
+use App\Product\Model\ProductBrand;
 use Hyperf\Database\Model\Builder;
 use Mine\Abstracts\AbstractMapper;
 
 /**
- * 商品分类Mapper类.
+ * 商品品牌Mapper类.
  */
-class ProductCategoryMapper extends AbstractMapper
+class ProductBrandMapper extends AbstractMapper
 {
     /**
-     * @var ProductCategory
+     * @var ProductBrand
      */
     public $model;
 
     public function assignModel()
     {
-        $this->model = ProductCategory::class;
+        $this->model = ProductBrand::class;
     }
 
     /**
@@ -36,51 +36,37 @@ class ProductCategoryMapper extends AbstractMapper
      */
     public function handleSearch(Builder $query, array $params): Builder
     {
+        // 自增ID
         if (isset($params['id']) && filled($params['id'])) {
             $query->where('id', '=', $params['id']);
         }
 
-        // 分类标识
-        if (isset($params['category_no']) && filled($params['category_no'])) {
-            $query->where('category_no', 'like', '%' . $params['category_no'] . '%');
-        }
-
-        // 商品
+        // 第三方唯一标识
         if (isset($params['plat_no']) && filled($params['plat_no'])) {
             $query->where('plat_no', 'like', '%' . $params['plat_no'] . '%');
         }
 
-        // 上级编码
-        if (isset($params['parent_no']) && filled($params['parent_no'])) {
-            $query->where('parent_no', 'like', '%' . $params['parent_no'] . '%');
-        }
-
-        // 品牌编码
+        // 唯一编码
         if (isset($params['brand_no']) && filled($params['brand_no'])) {
             $query->where('brand_no', 'like', '%' . $params['brand_no'] . '%');
         }
 
-        // 分组名称
-        if (isset($params['title']) && filled($params['title'])) {
-            $query->where('title', 'like', '%' . $params['title'] . '%');
+        // 品牌名称
+        if (isset($params['name']) && filled($params['name'])) {
+            $query->where('name', 'like', '%' . $params['name'] . '%');
         }
 
-        // 分组图片
+        // 品牌图片
         if (isset($params['image']) && filled($params['image'])) {
             $query->where('image', '=', $params['image']);
         }
 
-        // 商品总数
-        if (isset($params['feed_count']) && filled($params['feed_count'])) {
-            $query->where('feed_count', '=', $params['feed_count']);
-        }
-
-        // 分组状态
+        // 品牌状态
         if (isset($params['status']) && filled($params['status'])) {
             $query->where('status', '=', $params['status']);
         }
 
-        // 分类排序
+        // 排序
         if (isset($params['sort']) && filled($params['sort'])) {
             $query->where('sort', '=', $params['sort']);
         }

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of MineAdmin.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
  */
 use Hyperf\Database\Migrations\Migration;
 use Hyperf\Database\Schema\Blueprint;
@@ -23,7 +23,6 @@ class CreateProductCategory extends Migration
         Schema::create('product_category', function (Blueprint $table) {
             $table->bigIncrements('id')->autoIncrement();
             $table->string('category_no', 10)->unique()->index()->comment('分类唯一标识');
-            $table->string('plat_no', 32)->index()->comment('商品第三方唯一标识');
             $table->string('parent_no', 10)->default(0)->comment('上级编码');
             $table->string('brand_no', 10)->default(0)->comment('品牌编码');
             $table->string('title', 30)->default('')->comment('分组名称');

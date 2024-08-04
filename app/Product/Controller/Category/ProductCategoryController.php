@@ -10,10 +10,10 @@ declare(strict_types=1);
  * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
  */
 
-namespace App\Product\Controller\Manage;
+namespace App\Product\Controller\Category;
 
-use App\Product\Request\ProductmanageRequest;
-use App\Product\Service\ProductmanageService;
+use App\Product\Request\ProductCategoryRequest;
+use App\Product\Service\ProductCategoryService;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;
@@ -32,29 +32,35 @@ use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * 商品列表控制器
- * Class ProductManageController.
+ * 商品分类控制器
+ * Class ProductCategoryController.
  */
-#[Controller(prefix: 'product/manage'), Auth]
+#[Controller(prefix: 'product/category'), Auth]
 #[Middleware(middleware: CheckModuleMiddleware::class)]
-class ProductManageController extends MineController
+class ProductCategoryController extends MineController
 {
     /**
      * 业务处理服务
-     * ProductmanageService.
+     * ProductCategoryService.
      */
     #[Inject]
-    protected ProductmanageService $service;
+    protected ProductCategoryService $service;
 
     /**
      * 列表.
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    #[GetMapping('index'), Permission('product:manage, product:manage:index')]
+    #[GetMapping('index'), Permission('product:category, product:category:index')]
     public function index(): ResponseInterface
     {
         return $this->success($this->service->getPageList($this->request->all()));
+    }
+
+    #[GetMapping('list'), Permission('product:category, product:category:index')]
+    public function list(): ResponseInterface
+    {
+        return $this->success($this->service->getList());
     }
 
     /**
@@ -62,7 +68,7 @@ class ProductManageController extends MineController
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    #[GetMapping('recycle'), Permission('product:manage:recycle')]
+    #[GetMapping('recycle'), Permission('product:category:recycle')]
     public function recycle(): ResponseInterface
     {
         return $this->success($this->service->getPageListByRecycle($this->request->all()));
@@ -73,7 +79,7 @@ class ProductManageController extends MineController
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    #[DeleteMapping('realDelete'), Permission('product:manage:realDelete'), OperationLog]
+    #[DeleteMapping('realDelete'), Permission('product:category:realDelete'), OperationLog]
     public function realDelete(): ResponseInterface
     {
         return $this->service->realDelete((array) $this->request->input('ids', [])) ? $this->success() : $this->error();
@@ -84,7 +90,7 @@ class ProductManageController extends MineController
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    #[PutMapping('recovery'), Permission('product:manage:recovery'), OperationLog]
+    #[PutMapping('recovery'), Permission('product:category:recovery'), OperationLog]
     public function recovery(): ResponseInterface
     {
         return $this->service->recovery((array) $this->request->input('ids', [])) ? $this->success() : $this->error();
@@ -95,8 +101,8 @@ class ProductManageController extends MineController
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    #[PostMapping('save'), Permission('product:manage:save'), OperationLog]
-    public function save(ProductmanageRequest $request): ResponseInterface
+    #[PostMapping('save'), Permission('product:category:save'), OperationLog]
+    public function save(ProductCategoryRequest $request): ResponseInterface
     {
         return $this->success(['id' => $this->service->save($request->all())]);
     }
@@ -106,8 +112,8 @@ class ProductManageController extends MineController
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    #[PutMapping('update/{id}'), Permission('product:manage:update'), OperationLog]
-    public function update(int $id, ProductmanageRequest $request): ResponseInterface
+    #[PutMapping('update/{id}'), Permission('product:category:update'), OperationLog]
+    public function update(int $id, ProductCategoryRequest $request): ResponseInterface
     {
         return $this->service->update($id, $request->all()) ? $this->success() : $this->error();
     }
@@ -117,7 +123,7 @@ class ProductManageController extends MineController
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    #[GetMapping('read/{id}'), Permission('product:manage:read')]
+    #[GetMapping('read/{id}'), Permission('product:category:read')]
     public function read(int $id): ResponseInterface
     {
         return $this->success($this->service->read($id));
@@ -128,7 +134,7 @@ class ProductManageController extends MineController
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    #[DeleteMapping('delete'), Permission('product:manage:delete'), OperationLog]
+    #[DeleteMapping('delete'), Permission('product:category:delete'), OperationLog]
     public function delete(): ResponseInterface
     {
         return $this->service->delete((array) $this->request->input('ids', [])) ? $this->success() : $this->error();
@@ -139,11 +145,11 @@ class ProductManageController extends MineController
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    #[PutMapping('changeStatus'), Permission('product:manage:update'), OperationLog]
+    #[PutMapping('changeStatus'), Permission('product:category:update'), OperationLog]
     public function changeStatus(): ResponseInterface
     {
         return $this->service->changeStatus(
-            (int) $this->request->input('setting_generate_tables.id'),
+            (int) $this->request->input('id'),
             (string) $this->request->input('statusValue'),
             (string) $this->request->input('statusName', 'status')
         ) ? $this->success() : $this->error();
@@ -154,11 +160,11 @@ class ProductManageController extends MineController
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    #[PutMapping('numberOperation'), Permission('product:manage:update'), OperationLog]
+    #[PutMapping('numberOperation'), Permission('product:category:update'), OperationLog]
     public function numberOperation(): ResponseInterface
     {
         return $this->service->numberOperation(
-            (int) $this->request->input('setting_generate_tables.id'),
+            (int) $this->request->input('id'),
             (string) $this->request->input('numberName'),
             (int) $this->request->input('numberValue', 1),
         ) ? $this->success() : $this->error();

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of MineAdmin.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @link     https://www.mineadmin.com
+ * @document https://doc.mineadmin.com
+ * @contact  root@imoi.cn
+ * @license  https://github.com/mineadmin/MineAdmin/blob/master/LICENSE
  */
 use Hyperf\Database\Migrations\Migration;
 use Hyperf\Database\Schema\Blueprint;
@@ -22,7 +22,6 @@ class CreateProductBrand extends Migration
     {
         Schema::create('product_brand', function (Blueprint $table) {
             $table->bigIncrements('id')->autoIncrement()->comment('自增ID');
-            $table->string('plat_no', 32)->index()->comment('第三方唯一标识');
             $table->string('brand_no', 10)->index()->unique()->comment('唯一编码');
             $table->string('name', 15)->comment('品牌名称');
             $table->string('image', 255)->nullable()->comment('品牌图片');
