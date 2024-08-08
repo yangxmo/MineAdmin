@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace App\Product\Service;
 
-use App\Product\Entity\SpuEntity;
+use App\Product\Entity\ProductEntity;
 use App\Product\Mapper\ProductInfoMapper;
 use App\Product\Redis\LockRedis;
 use App\Product\Trait\ProductAttributeTrait;
@@ -122,7 +122,7 @@ class ProductActionService extends AbstractService
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    private function saveAttribute(SpuEntity $productInfo, MineModel $productObject): void
+    private function saveAttribute(ProductEntity $productInfo, MineModel $productObject): void
     {
         array_map(function ($item) use ($productObject) {
             // 设置属性

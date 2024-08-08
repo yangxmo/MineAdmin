@@ -15,6 +15,7 @@ namespace App\Product\Mapper;
 use App\Product\Model\ProductInfo;
 use Hyperf\Database\Model\Builder;
 use Mine\Abstracts\AbstractMapper;
+use Mine\MineModel;
 
 /**
  * 商品列表Mapper类.
@@ -32,6 +33,14 @@ class ProductInfoMapper extends AbstractMapper
     }
 
     /**
+     * 获取商品信息.
+     */
+    public function getInfoByProductNo(string $productNo, array $column = ['*']): ?MineModel
+    {
+        return $this->model::query()->with(['attributes', 'attributes.attributeValue', 'sku'])->where('product_no', $productNo)->first($column);
+    }
+
+    /**
      * 新增数据.
      */
     public function create(array $data): ProductInfo
@@ -41,23 +50,43 @@ class ProductInfoMapper extends AbstractMapper
     }
 
     /**
+     * 更新数据.
+     */
+    public function updateOrCreate(array $conditions, array $data): ProductInfo
+    {
+        $this->filterExecuteAttributes($data, $this->getModel()->incrementing);
+        return $this->model::updateOrCreate($conditions, $data);
+    }
+
+    /**
+     * 获取列表.
+     */
+    public function getPageList(?array $params, bool $isScope = true, string $pageName = 'page'): array
+    {
+        $paginate = $this->listQuerySetting($params, $isScope)
+            ->with(['brand', 'category'])
+            ->paginate(
+                (int) ($params['pageSize'] ?? $this->model::PAGE_SIZE),
+                ['*'],
+                $pageName,
+                (int) ($params[$pageName] ?? 1)
+            );
+        return $this->setPaginate($paginate, $params);
+    }
+
+    /**
      * 搜索处理器.
      */
     public function handleSearch(Builder $query, array $params): Builder
     {
         // 商品自增ID
-        if (isset($params['id']) && filled($params['id'])) {
-            $query->where('id', '=', $params['id']);
+        if (isset($params['productNos']) && filled($params['productNos'])) {
+            $query->whereIn('product_no', $params['productNos']);
         }
 
         // 商品标识
         if (isset($params['product_no']) && filled($params['product_no'])) {
             $query->where('product_no', 'like', '%' . $params['product_no'] . '%');
-        }
-
-        // 三方标识
-        if (isset($params['product_plat_no']) && filled($params['product_plat_no'])) {
-            $query->where('product_plat_no', 'like', '%' . $params['product_plat_no'] . '%');
         }
 
         // 商品名称
@@ -66,13 +95,13 @@ class ProductInfoMapper extends AbstractMapper
         }
 
         // 分组ID
-        if (isset($params['category_id']) && filled($params['category_id'])) {
-            $query->where('category_id', '=', $params['category_id']);
+        if (isset($params['category_no']) && filled($params['category_no'])) {
+            $query->where('category_no', '=', $params['category_no']);
         }
 
         // 品牌ID
-        if (isset($params['brand_id']) && filled($params['brand_id'])) {
-            $query->where('brand_id', '=', $params['brand_id']);
+        if (isset($params['brand_no']) && filled($params['brand_no'])) {
+            $query->where('brand_no', '=', $params['brand_no']);
         }
 
         // 商品状态

@@ -30,45 +30,45 @@ class ProductSkuCache extends CacheAbstract
      * 设置商品信息.
      * @throws \RedisException
      */
-    public function setInfoCache(string $platNo, ?string $skuId, array $data): void
+    public function setInfoCache(string $productNo, ?string $skuId, array $data): void
     {
         if ($skuId) {
-            $key = $this->getKey("{$platNo}_{$skuId}");
+            $key = $this->getKey("{$productNo}_{$skuId}");
         } else {
-            $key = $this->getKey("{$platNo}");
+            $key = $this->getKey("{$productNo}");
         }
 
-        $this->redis->hSet($key, $platNo, Json::encode($data));
+        $this->redis->hSet($key, $productNo, Json::encode($data));
     }
 
     /**
      * 删除商品信息.
      * @throws \RedisException
      */
-    public function delInfoCache(string $platNo, ?string $skuId): void
+    public function delInfoCache(string $productNo, ?string $skuId): void
     {
         if ($skuId) {
-            $key = $this->getKey("{$platNo}_{$skuId}");
+            $key = $this->getKey("{$productNo}_{$skuId}");
         } else {
-            $key = $this->getKey("{$platNo}");
+            $key = $this->getKey("{$productNo}");
         }
 
-        $this->redis->hDel($key, $platNo);
+        $this->redis->hDel($key, $productNo);
     }
 
     /**
      * 获取商品信息.
      * @throws \RedisException
      */
-    public function getInfoCache(string $platNo, ?string $skuId): array
+    public function getInfoCache(string $productNo, ?string $skuId): array
     {
         if ($skuId) {
-            $key = $this->getKey("{$platNo}_{$skuId}");
+            $key = $this->getKey("{$productNo}_{$skuId}");
         } else {
-            $key = $this->getKey("{$platNo}");
+            $key = $this->getKey("{$productNo}");
         }
 
-        $result = $this->redis->hGet($key, $platNo);
+        $result = $this->redis->hGet($key, $productNo);
 
         return $result ? Json::decode($result) : [];
     }

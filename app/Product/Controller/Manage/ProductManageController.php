@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace App\Product\Controller\Manage;
 
-use App\Product\Request\ProductmanageRequest;
-use App\Product\Service\ProductmanageService;
+use App\Product\Request\ProductManageRequest;
+use App\Product\Service\ProductManageService;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;
@@ -41,10 +41,10 @@ class ProductManageController extends MineController
 {
     /**
      * 业务处理服务
-     * ProductmanageService.
+     * ProductManageService.
      */
     #[Inject]
-    protected ProductmanageService $service;
+    protected ProductManageService $service;
 
     /**
      * 列表.
@@ -76,7 +76,7 @@ class ProductManageController extends MineController
     #[DeleteMapping('realDelete'), Permission('product:manage:realDelete'), OperationLog]
     public function realDelete(): ResponseInterface
     {
-        return $this->service->realDelete((array) $this->request->input('ids', [])) ? $this->success() : $this->error();
+        return $this->service->realDelete((array) $this->request->input('productNos', [])) ? $this->success() : $this->error();
     }
 
     /**
@@ -87,7 +87,7 @@ class ProductManageController extends MineController
     #[PutMapping('recovery'), Permission('product:manage:recovery'), OperationLog]
     public function recovery(): ResponseInterface
     {
-        return $this->service->recovery((array) $this->request->input('ids', [])) ? $this->success() : $this->error();
+        return $this->service->recovery((array) $this->request->input('productNos', [])) ? $this->success() : $this->error();
     }
 
     /**
@@ -96,9 +96,10 @@ class ProductManageController extends MineController
      * @throws NotFoundExceptionInterface
      */
     #[PostMapping('save'), Permission('product:manage:save'), OperationLog]
-    public function save(ProductmanageRequest $request): ResponseInterface
+    public function save(ProductManageRequest $request): ResponseInterface
     {
-        return $this->success(['id' => $this->service->save($request->all())]);
+        $status = $this->service->create($request->validated());
+        return $status ? $this->success() : $this->error();
     }
 
     /**
@@ -106,10 +107,10 @@ class ProductManageController extends MineController
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    #[PutMapping('update/{id}'), Permission('product:manage:update'), OperationLog]
-    public function update(int $id, ProductmanageRequest $request): ResponseInterface
+    #[PutMapping('update/{productNo}'), Permission('product:manage:update'), OperationLog]
+    public function update(string $productNo, ProductManageRequest $request): ResponseInterface
     {
-        return $this->service->update($id, $request->all()) ? $this->success() : $this->error();
+        return $this->service->update($productNo, $request->all()) ? $this->success() : $this->error();
     }
 
     /**
@@ -117,10 +118,10 @@ class ProductManageController extends MineController
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    #[GetMapping('read/{id}'), Permission('product:manage:read')]
-    public function read(int $id): ResponseInterface
+    #[GetMapping('read/{productNo}'), Permission('product:manage:read')]
+    public function read(int $productNo): ResponseInterface
     {
-        return $this->success($this->service->read($id));
+        return $this->success($this->service->read($productNo));
     }
 
     /**
@@ -131,7 +132,7 @@ class ProductManageController extends MineController
     #[DeleteMapping('delete'), Permission('product:manage:delete'), OperationLog]
     public function delete(): ResponseInterface
     {
-        return $this->service->delete((array) $this->request->input('ids', [])) ? $this->success() : $this->error();
+        return $this->service->delete((array) $this->request->input('productNos', [])) ? $this->success() : $this->error();
     }
 
     /**
@@ -143,7 +144,7 @@ class ProductManageController extends MineController
     public function changeStatus(): ResponseInterface
     {
         return $this->service->changeStatus(
-            (int) $this->request->input('setting_generate_tables.id'),
+            (string) $this->request->input('setting_generate_tables.product_no'),
             (string) $this->request->input('statusValue'),
             (string) $this->request->input('statusName', 'status')
         ) ? $this->success() : $this->error();

@@ -25,7 +25,7 @@ class CreateProductAttributesValue extends Migration
             $table->string('product_no', 32)->index()->comment('商品唯一标识ID');
             $table->foreign('product_no')->references('product_no')->on('product_info')->onDelete('cascade');
             $table->string('attributes_no', 32)->comment('商品属性名称编号');
-            $table->bigInteger('attr_value_no')->comment('商品属性值编号');
+            $table->string('attr_value_no', 32)->comment('商品属性值编号');
             $table->string('attr_value', 100)->comment('商品属性值');
             $table->comment('产品属性值');
         });
